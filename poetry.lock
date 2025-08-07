@@ -213,6 +213,18 @@ files = [
 ]
 
 [[package]]
+name = "couchdb"
+version = "1.2"
+description = "Python library for working with CouchDB"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "CouchDB-1.2-py2.py3-none-any.whl", hash = "sha256:13a28a1159c49f8346732e8724b9a4d65cba54bec017c4a7eeb1499fe88151d1"},
+    {file = "CouchDB-1.2.tar.gz", hash = "sha256:1386a1a43f25bed3667e3b805222054940d674fa1967fa48e9d2012a18630ab7"},
+]
+
+[[package]]
 name = "idna"
 version = "3.10"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -391,4 +403,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "cc043b6d0027f2de2e1c5d1855a56ddf2076903700a722af58c5bcb310cc0f87"
+content-hash = "b7983e49d4ef1d2f29bf3ba6ef9537b061da99c2390698dd2d9524e6df34611d"

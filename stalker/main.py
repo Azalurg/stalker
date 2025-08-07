@@ -2,8 +2,8 @@ import argparse
 import sys
 import logging
 
-from scraper import Scraper
-from parser import Parser
+from stalker.src.scraper import Scraper
+from stalker.src.parser import Parser
 
 
 def setup_logging():
