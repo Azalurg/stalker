@@ -40,8 +40,9 @@ def main():
             sys.exit(1)
 
         # Step 2: Parse the content
-        parser_obj = Parser(soup, wallet_name)
-        parser_obj.parse_html()
+        parser = Parser(soup, wallet_name)
+        snapshot = parser.make_snapshot()
+        print(snapshot)
 
     except KeyboardInterrupt:
         logger.info("Operation interrupted by user")

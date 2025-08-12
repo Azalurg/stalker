@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
+from stalker.src.models.wallet import Snapshot, Asset
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,15 +20,10 @@ class Parser:
         self.soup = soup
         self.name = name
         self.text = str(soup)
-        self.xml_blob = self._extract_xml_blob()
         logger.info("Parser initialized")
-
-    def parse_html(self):
+        self.xml_blob = self._extract_xml_blob()
         self.rows = self._iter_asset_rows()
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        out_path = Path(f"{self.name}_{timestamp}.csv")
-        self._save_csv(out_path)
-        logger.info(f"Saved {len(self.rows)} asset rows → {out_path}")
+        logger.info("Page parsed successfully")
 
     def _extract_xml_blob(self) -> str:
         m = re.search(r'mygrid\.parse\("(?P<xml>.*?)"\s*\);\s*', self.text, re.DOTALL)
@@ -55,7 +52,9 @@ class Parser:
 
         return rows
 
-    def _save_csv(self, outfile: Path):
+    def save_csv(self):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        outfile = Path(f"{self.name}_{timestamp}.csv")
         logger.info(f"Saving data to CSV file: {outfile}")
 
         headers = [
@@ -89,3 +88,27 @@ class Parser:
                         cells[10],  # Investment Period
                     ]
                 )
+        logger.info(f"Saved {len(self.rows)} asset rows → {outfile}")
+
+    def make_snapshot(self):
+        logger.info("Parsing snapshot...")
+        self.rows = self._iter_asset_rows()
+        assets = []
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        for cells in self.rows:
+            name = cells[1][len(cells[1]) // 2 :]
+            asset = Asset(
+                name=name,
+                units=float(cells[3].replace(",", ".")),
+                average_purchase_price=float(cells[4].replace(",", ".")),
+                current_price=float(cells[5].replace(",", ".")),
+                value=float(cells[6].replace(",", ".")),
+                assets_share=float(cells[7].replace(",", ".")),
+                change=float(cells[8].replace(",", ".")),
+                profit=float(cells[9].replace(",", ".")),
+                investment_period=int(cells[10]),
+                timestamp=timestamp,
+            )
+            assets.append(asset)
+        snapshot = Snapshot(assets=assets)
+        return snapshot
