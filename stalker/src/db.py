@@ -1,4 +1,5 @@
 import logging
+import os
 
 import couchdb
 import requests
@@ -7,15 +8,13 @@ logger = logging.getLogger(__name__)
 
 
 class Store:
-    def __init__(
-        self, username, password, dbname, host="127.0.0.1", port="5984", protocol="http"
-    ):
-        self._username = username
-        self._password = password
-        self._host = host
-        self._port = port
-        self._protocol = protocol
-        self._dbname = dbname
+    def __init__(self):
+        self._username = os.getenv("COUCHDB_USERNAME", "admin")
+        self._password = os.getenv("COUCHDB_PASSWORD", "password")
+        self._host = os.getenv("COUCHDB_HOST", "localhost")
+        self._port = os.getenv("COUCHDB_PORT", "5984")
+        self._protocol = os.getenv("COUCHDB_PROTOCOL", "http")
+        self._dbname = os.getenv("COUCHDB_DBNAME", "stalker")
 
         self._url = "{}://{}:{}@{}:{}".format(
             self._protocol, self._username, self._password, self._host, self._port

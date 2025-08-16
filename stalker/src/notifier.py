@@ -15,8 +15,6 @@ class Notifier:
         self._smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
         self._smtp_port = int(os.getenv("SMTP_PORT", 587))
 
-
-
     def start_server(self):
         self._server = smtplib.SMTP(self._smtp_server, self._smtp_port)
         self._server.starttls()
