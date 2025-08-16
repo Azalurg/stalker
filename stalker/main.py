@@ -3,7 +3,10 @@ import sys
 import logging
 from datetime import datetime
 
+from dotenv import load_dotenv
+
 from stalker.src.db import Store
+from stalker.src.notifier import Notifier
 from stalker.src.models.wallet import Wallet
 from stalker.src.scraper import Scraper
 from stalker.src.parser import Parser
@@ -71,7 +74,8 @@ def process_snapshot(store: Store, wallet_name: str, snapshot, logger):
         return False
 
 
-def main():
+if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description="Stalker - Wallet monitoring tool")
     parser.add_argument("--url", help="URL of the webpage to scrape", required=True)
     parser.add_argument("--name", help="Wallet name", required=True)
@@ -80,6 +84,15 @@ def main():
     setup_logging()
     logger = logging.getLogger(__name__)
     logger.info("=== STALKER STARTED ===")
+
+    load_dotenv()
+
+    notifier = Notifier()
+    notifier.start_server()
+    notifier.send_email("Stalker started", "Stalker service has been started successfully.")
+    notifier.quit_server()
+
+    exit()
 
     try:
         url = args.url
@@ -107,7 +120,3 @@ def main():
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
